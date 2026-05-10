@@ -827,27 +827,62 @@
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
+  // ── APPS SCRIPT ENDPOINT ──
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwy52uQmwxMDiKOef1Z8sQ-bPFqdcqvETBjBP9p-N93pjGHQyNq9VmNXcTyvqwF1-B8/exec";
+
   // Form submit
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const form = document.getElementById('trialForm');
     const wrap = document.getElementById('formWrap');
     const success = document.getElementById('successMsg');
+    const btn = form.querySelector('.form-submit');
 
-    // Collect form data (you can send this to a Google Form or email)
-    const name = form.querySelector('input[type="text"]').value;
-    const email = form.querySelector('input[type="email"]').value;
-    const disease = form.querySelectorAll('input[type="text"]')[1].value;
-    const phases = [...form.querySelectorAll('input[type="checkbox"]:checked')].map(c => c.value);
+    // Disable button and show loading state
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
 
-    // Log to console (replace with your Google Form POST or email webhook)
-    console.log({ name, email, disease, phases });
+    // Collect all form fields
+    const inputs = form.querySelectorAll('input[type="text"]');
+    const name     = inputs[0].value.trim();
+    const org      = inputs[1] ? inputs[1].value.trim() : "";
+    const disease  = inputs[2] ? inputs[2].value.trim() : "";
+    const email    = form.querySelector('input[type="email"]').value.trim();
+    const phases   = [...form.querySelectorAll('input[type="checkbox"]:checked')]
+                       .map(c => c.value).join(", ");
+    const selects  = form.querySelectorAll('select');
+    const frequency = selects[1] ? selects[1].value : "Weekly";
+    const notes    = form.querySelector('textarea') ? form.querySelector('textarea').value.trim() : "";
 
-    // Show success
-    wrap.style.display = 'none';
-    success.style.display = 'block';
+    // Basic validation
+    if (!name || !email || !disease) {
+      alert('Please fill in your name, email, and disease area.');
+      btn.disabled = false;
+      btn.textContent = 'Request My Free Feed →';
+      return;
+    }
 
-    // TODO: POST to your Google Form or backend here
+    const payload = { name, email, org, disease, phases, frequency, notes };
+
+    try {
+      // POST to Google Apps Script — no-cors because Apps Script doesn't send CORS headers
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      // no-cors means we can't read the response — but if fetch didn't throw, it went through
+      wrap.style.display = 'none';
+      success.style.display = 'block';
+
+    } catch (err) {
+      console.error('Submission error:', err);
+      alert('Something went wrong. Please try again or email us directly at gettrialtracker@gmail.com');
+      btn.disabled = false;
+      btn.textContent = 'Request My Free Feed →';
+    }
   }
 </script>
 </body>
