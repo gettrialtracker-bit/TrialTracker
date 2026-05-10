@@ -3,214 +3,659 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TrialTracker — Clinical Trial Intelligence</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<title>TrialTracker — Clinical Trial Intelligence, Automated</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --black:#080c14;
-  --dark:#0f1623;
-  --card:#161e2e;
-  --border:#1e2d42;
-  --green:#00c47d;
-  --green-dim:#003d27;
-  --green-glow:rgba(0,196,125,0.15);
-  --white:#ffffff;
-  --grey:#8a9ab5;
-  --light:#e8edf5;
-  --font:'Inter',sans-serif;
-  --serif:'Playfair Display',serif;
-}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--black);color:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  :root {
+    --ink: #0a0f1e;
+    --ink-soft: #3d4460;
+    --ink-muted: #8891b0;
+    --cream: #f8f6f1;
+    --white: #ffffff;
+    --accent: #1a6b4a;
+    --accent-light: #e8f5ee;
+    --accent-mid: #2d9e6e;
+    --new: #1a6b4a;
+    --active: #1a4a8a;
+    --closed: #888;
+    --border: #e2e0da;
+    --shadow: 0 2px 24px rgba(10,15,30,0.08);
+    --shadow-lg: 0 8px 48px rgba(10,15,30,0.14);
+  }
 
-/* ─── NAV ─── */
-nav{position:fixed;top:0;left:0;right:0;z-index:99;display:flex;align-items:center;justify-content:space-between;padding:0 6vw;height:68px;background:rgba(8,12,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.logo{font-family:var(--serif);font-size:1.35rem;color:var(--white);text-decoration:none;letter-spacing:-0.01em}
-.logo em{font-style:italic;color:var(--green)}
-.nav-btn{background:var(--green);color:var(--black);border:none;padding:10px 24px;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;text-decoration:none;transition:opacity .2s,transform .2s}
-.nav-btn:hover{opacity:.85;transform:translateY(-1px)}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ─── HERO ─── */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 6vw 80px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(0,196,125,0.06) 0%,transparent 70%);pointer-events:none}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-dim);border:1px solid rgba(0,196,125,0.3);color:var(--green);font-size:0.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:36px;width:fit-content}
-.hero-badge::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.hero h1{font-family:var(--serif);font-size:clamp(3rem,7vw,5.5rem);line-height:1.05;letter-spacing:-.02em;max-width:820px;margin-bottom:28px;font-weight:700}
-.hero h1 i{font-style:italic;color:var(--green)}
-.hero-sub{font-size:1.1rem;color:var(--grey);max-width:520px;line-height:1.75;margin-bottom:48px;font-weight:300}
-.hero-cta{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.btn-main{background:var(--green);color:var(--black);padding:16px 36px;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;transition:all .2s;box-shadow:0 0 32px var(--green-glow)}
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(0,196,125,0.3)}
-.btn-ghost{color:var(--grey);font-size:0.9rem;text-decoration:none;transition:color .2s}
-.btn-ghost:hover{color:var(--white)}
+  html { scroll-behavior: smooth; }
 
-/* ─── LIVE PREVIEW ─── */
-.preview{margin-top:72px;max-width:960px}
-.preview-label{font-size:0.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--border);margin-bottom:12px;font-family:monospace}
-.sheet{background:var(--dark);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.5)}
-.sheet-head{background:#0a0f1a;display:grid;grid-template-columns:88px 78px 1fr 80px 130px;gap:0;padding:0}
-.sh-cell{padding:10px 14px;font-size:0.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--border);font-family:monospace;border-right:1px solid #111}
-.sheet-row{display:grid;grid-template-columns:88px 78px 1fr 80px 130px;border-top:1px solid #111;transition:background .15s}
-.sheet-row:hover{background:rgba(255,255,255,0.02)}
-.sr-cell{padding:11px 14px;font-size:0.8rem;color:var(--grey);border-right:1px solid #0d1220;display:flex;align-items:center;overflow:hidden}
-.sr-cell.title{color:var(--light);font-weight:500}
-.badge{display:inline-flex;align-items:center;gap:5px;font-size:0.65rem;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:5px;font-family:monospace}
-.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
-.badge.new{color:#00c47d;background:rgba(0,196,125,0.12);border:1px solid rgba(0,196,125,0.2)}
-.badge.active{color:#4d9fff;background:rgba(77,159,255,0.1);border:1px solid rgba(77,159,255,0.2)}
-.badge.closed{color:#666;background:rgba(255,255,255,0.04);border:1px solid #222}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
 
-/* ─── SECTIONS ─── */
-section{padding:100px 6vw}
-.tag{font-size:0.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:16px;font-weight:600}
-.title{font-family:var(--serif);font-size:clamp(2.2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:20px;max-width:600px}
-.sub{color:var(--grey);font-size:1rem;line-height:1.75;max-width:500px;font-weight:300;margin-bottom:56px}
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw;
+    height: 64px;
+    background: rgba(248,246,241,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-cta {
+    background: var(--ink);
+    color: var(--white);
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent); }
 
-/* ─── HOW ─── */
-.how{background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--border);border-radius:12px;overflow:hidden;border:1px solid var(--border)}
-.step{background:var(--dark);padding:40px 32px}
-.step-n{font-family:var(--serif);font-size:2.5rem;color:var(--green-dim);line-height:1;margin-bottom:20px;position:relative}
-.step-n::after{content:attr(data-n);position:absolute;left:0;top:4px;color:var(--green);font-size:1rem;font-weight:700}
-.step h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--light)}
-.step p{font-size:0.88rem;color:var(--grey);line-height:1.65}
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 5vw 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(26,107,74,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+    width: fit-content;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    max-width: 780px;
+    margin-bottom: 28px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 540px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(26,107,74,0.25);
+  }
+  .btn-primary:hover {
+    background: #155a3d;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,107,74,0.35);
+  }
+  .btn-secondary {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-secondary:hover { color: var(--ink); }
 
-/* ─── DATA POINTS ─── */
-.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
-.chip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;display:flex;align-items:center;gap:12px;transition:border-color .2s}
-.chip:hover{border-color:rgba(0,196,125,0.3)}
-.chip-icon{width:34px;height:34px;background:var(--green-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-.chip-text strong{display:block;font-size:0.82rem;font-weight:600;color:var(--light);margin-bottom:2px}
-.chip-text span{font-size:0.72rem;color:var(--grey)}
+  /* ── SAMPLE SHEET PREVIEW ── */
+  .preview-wrap {
+    margin-top: 72px;
+    position: relative;
+  }
+  .preview-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .sheet-preview {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    max-width: 900px;
+  }
+  .sheet-header {
+    background: #0a0f1e;
+    color: #fff;
+    display: grid;
+    grid-template-columns: 90px 80px 180px 90px 120px 140px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    gap: 12px;
+    color: rgba(255,255,255,0.6);
+  }
+  .sheet-row {
+    display: grid;
+    grid-template-columns: 90px 80px 180px 90px 120px 140px;
+    padding: 10px 16px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.78rem;
+    align-items: center;
+    transition: background 0.15s;
+  }
+  .sheet-row:hover { background: #fafaf8; }
+  .sheet-row:last-child { border-bottom: none; }
+  .sheet-row.new { background: rgba(26,107,74,0.04); }
+  .sheet-row.active { background: rgba(26,74,138,0.03); }
+  .sheet-row.closed { background: rgba(136,136,136,0.04); }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .status-badge.new { background: var(--accent-light); color: var(--accent); }
+  .status-badge.active { background: #e8eef8; color: var(--active); }
+  .status-badge.closed { background: #f0f0f0; color: var(--closed); }
+  .status-badge::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .cell-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+  }
+  .cell-title {
+    color: var(--ink);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cell-muted { color: var(--ink-muted); }
 
-/* ─── PRICING ─── */
-.pricing{background:var(--dark);border-top:1px solid var(--border)}
-.price-card{max-width:500px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px;position:relative;overflow:hidden}
-.price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),#00e5ff)}
-.price-badge{display:inline-block;background:var(--green-dim);color:var(--green);font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:24px;border:1px solid rgba(0,196,125,0.2)}
-.price-card h3{font-family:var(--serif);font-size:2rem;margin-bottom:10px;line-height:1.2}
-.price-card p{color:var(--grey);font-size:0.92rem;line-height:1.65;margin-bottom:32px}
-.price-list{list-style:none;margin-bottom:40px}
-.price-list li{display:flex;align-items:flex-start;gap:10px;font-size:0.88rem;color:var(--light);padding:9px 0;border-bottom:1px solid var(--border)}
-.price-list li:last-child{border-bottom:none}
-.price-list li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
-.price-note{font-size:0.75rem;color:var(--grey);text-align:center;margin-top:16px}
+  /* ── SECTION BASE ── */
+  section { padding: 96px 5vw; }
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    max-width: 640px;
+  }
+  .section-sub {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 540px;
+    font-weight: 300;
+    margin-bottom: 56px;
+  }
 
-/* ─── FORM ─── */
-.form-sec{background:var(--black);border-top:1px solid var(--border)}
-.form-sec .title{color:var(--white)}
-.form-sec .sub{color:var(--grey)}
-.form-sec .tag{color:var(--green)}
-.form-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px;max-width:680px}
-.fg{margin-bottom:22px}
-.fg label{display:block;font-size:0.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--grey);margin-bottom:8px;font-family:monospace}
-.fg label .hint{color:rgba(0,196,125,0.7);font-size:0.68rem;font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--font)}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:13px 16px;color:var(--white);font-family:var(--font);font-size:0.92rem;outline:none;transition:border-color .2s;appearance:none}
-.fg input::placeholder{color:#3a4a60}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--green)}
-.fg select option{background:var(--dark)}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.erow{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
-.esep{color:var(--border);text-align:center;font-size:0.85rem}
+  /* ── HOW IT WORKS ── */
+  .how { background: var(--white); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .step {
+    background: var(--white);
+    padding: 40px 32px;
+    position: relative;
+  }
+  .step-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: var(--accent-light);
+    line-height: 1;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .step-num::after {
+    content: attr(data-n);
+    position: absolute;
+    left: 0; top: 0;
+    color: var(--accent);
+    font-size: 1.5rem;
+  }
+  .step h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .step p {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
 
-/* CHECKBOXES */
-.cb-group{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.cb-item{display:flex;align-items:center;gap:9px;padding:10px 13px;border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:all .15s;user-select:none}
-.cb-item:hover{border-color:rgba(0,196,125,0.3)}
-.cb-item input{display:none}
-.cb-box{width:16px;height:16px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:transparent;position:relative}
-.cb-box::after{content:'';position:absolute;width:8px;height:5px;border-left:2px solid var(--black);border-bottom:2px solid var(--black);transform:rotate(-45deg) scale(0) translateY(-1px);transition:transform .15s}
-.cb-item span{font-size:0.8rem;color:var(--grey);font-family:monospace;transition:color .15s}
-.cb-item.on{background:rgba(0,196,125,0.08);border-color:rgba(0,196,125,0.35)}
-.cb-item.on .cb-box{background:var(--green);border-color:var(--green)}
-.cb-item.on .cb-box::after{transform:rotate(-45deg) scale(1) translateY(-1px)}
-.cb-item.on span{color:var(--white);font-weight:600}
+  /* ── WHAT YOU GET ── */
+  .data-points {
+    background: var(--cream);
+  }
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .data-chip {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .data-chip:hover {
+    border-color: var(--accent-mid);
+    box-shadow: 0 2px 12px rgba(26,107,74,0.08);
+  }
+  .data-chip-icon {
+    width: 32px; height: 32px;
+    background: var(--accent-light);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .data-chip-text strong {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .data-chip-text span {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
 
-.submit-btn{width:100%;background:var(--green);color:var(--black);border:none;padding:17px;border-radius:10px;font-family:var(--font);font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;box-shadow:0 4px 24px var(--green-glow)}
-.submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,196,125,0.35)}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.form-note{font-size:0.75rem;color:var(--border);text-align:center;margin-top:14px;line-height:1.5}
+  /* ── PRICING ── */
+  .pricing { background: var(--white); }
+  .pricing-card {
+    max-width: 480px;
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+  }
+  .pricing-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .pricing-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  .pricing-card p {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .pricing-list {
+    list-style: none;
+    margin-bottom: 40px;
+  }
+  .pricing-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pricing-list li:last-child { border-bottom: none; }
+  .pricing-list li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .pricing-note {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    margin-top: 16px;
+    text-align: center;
+  }
 
-/* SUCCESS */
-.success{display:none;text-align:center;padding:56px 32px}
-.success .ico{font-size:3.5rem;margin-bottom:20px}
-.success h3{font-family:var(--serif);font-size:2rem;margin-bottom:12px}
-.success p{color:var(--grey);font-size:0.95rem;line-height:1.65}
+  /* ── FORM ── */
+  .form-section { background: var(--ink); }
+  .form-section .section-title { color: var(--white); }
+  .form-section .section-sub { color: rgba(255,255,255,0.5); }
+  .form-section .section-tag { color: var(--accent-mid); }
 
-/* FOOTER */
-footer{background:var(--black);border-top:1px solid var(--border);padding:32px 6vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-footer p{font-size:0.78rem;color:var(--border)}
+  .form-wrap {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 48px;
+    max-width: 640px;
+  }
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  .form-group input::placeholder { color: rgba(255,255,255,0.25); }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--accent-mid);
+  }
+  .form-group select option { background: #1a2035; color: var(--white); }
 
-/* FADE */
-.fade{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
-.fade.in{opacity:1;transform:translateY(0)}
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .checkbox-item input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--accent-mid);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .checkbox-item span {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-submit {
+    width: 100%;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 18px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    box-shadow: 0 4px 20px rgba(26,107,74,0.4);
+  }
+  .form-submit:hover {
+    background: var(--accent-mid);
+    transform: translateY(-1px);
+  }
+  .form-note {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    margin-top: 16px;
+    line-height: 1.5;
+  }
 
-@media(max-width:640px){
-  .frow,.erow{grid-template-columns:1fr}
-  .cb-group{grid-template-columns:1fr 1fr}
-  .sheet-head,.sheet-row{grid-template-columns:80px 1fr 90px}
-  .sh-cell:nth-child(n+4),.sr-cell:nth-child(n+4){display:none}
-  .form-wrap{padding:28px 20px}
-}
+  /* ── SUCCESS STATE ── */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 48px;
+  }
+  .success-msg .check {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+  .success-msg h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .success-msg p {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.95rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer .nav-logo { color: rgba(255,255,255,0.4); }
+  footer p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 640px) {
+    .form-row { grid-template-columns: 1fr; }
+    .checkbox-group { grid-template-columns: repeat(2, 1fr); }
+    .sheet-header, .sheet-row {
+      grid-template-columns: 80px 70px 1fr;
+    }
+    .sheet-row > *:nth-child(n+4),
+    .sheet-header > *:nth-child(n+4) { display: none; }
+    .form-wrap { padding: 28px 20px; }
+    .pricing-card { padding: 32px 24px; }
+  }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="logo">Trial<em>Tracker</em></a>
-  <a href="#subscribe" class="nav-btn">Start Free →</a>
+  <a href="#" class="nav-logo">Trial<span>Tracker</span></a>
+  <a href="#subscribe" class="nav-cta">Start Free Trial</a>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-badge">Live Clinical Intelligence</div>
-  <h1>Stop checking<br>ClinicalTrials.gov.<br><i>Let it come to you.</i></h1>
-  <p class="hero-sub">Personalized trial feeds filtered by disease, phase, enrollment, location, and funding — updated weekly, delivered to your inbox.</p>
-  <div class="hero-cta">
-    <a href="#subscribe" class="btn-main">Get Your Free Feed →</a>
-    <a href="#how" class="btn-ghost">See how it works ↓</a>
+  <div class="hero-tag">Automated Clinical Intelligence</div>
+  <h1>Stop checking ClinicalTrials.gov.<br><em>Let it come to you.</em></h1>
+  <p class="hero-sub">TrialTracker monitors recruiting trials for your disease area — filtered by phase, updated weekly, delivered to your inbox. New trials flagged. Closed trials tracked. Nothing missed.</p>
+  <div class="hero-actions">
+    <a href="#subscribe" class="btn-primary">Get Your Free Trial Feed →</a>
+    <a href="#how" class="btn-secondary">See how it works ↓</a>
   </div>
 
-  <div class="preview fade">
-    <div class="preview-label">// Live feed · Diabetes · Phase 2 &amp; 3</div>
-    <div class="sheet">
-      <div class="sheet-head">
-        <div class="sh-cell">Status</div>
-        <div class="sh-cell">NCT ID</div>
-        <div class="sh-cell">Trial Title</div>
-        <div class="sh-cell">Phase</div>
-        <div class="sh-cell">Sponsor</div>
+  <div class="preview-wrap fade-up">
+    <div class="preview-label">// Live feed sample — Diabetes · Phase 2 & 3</div>
+    <div class="sheet-preview">
+      <div class="sheet-header">
+        <span>Status</span>
+        <span>NCT ID</span>
+        <span>Title</span>
+        <span>Phase</span>
+        <span>Sponsor</span>
+        <span>Completion</span>
       </div>
-      <div class="sheet-row">
-        <div class="sr-cell"><span class="badge new">NEW</span></div>
-        <div class="sr-cell" style="font-family:monospace;font-size:.7rem">NCT05821...</div>
-        <div class="sr-cell title">Semaglutide vs Placebo in T2D Management</div>
-        <div class="sr-cell">Phase 3</div>
-        <div class="sr-cell">Novo Nordisk</div>
+      <div class="sheet-row new">
+        <span><span class="status-badge new">NEW</span></span>
+        <span class="cell-mono">NCT05821...</span>
+        <span class="cell-title">Semaglutide vs Placebo in T2D Management</span>
+        <span class="cell-muted">Phase 3</span>
+        <span class="cell-muted">Novo Nordisk</span>
+        <span class="cell-muted">2026-09</span>
       </div>
-      <div class="sheet-row">
-        <div class="sr-cell"><span class="badge new">NEW</span></div>
-        <div class="sr-cell" style="font-family:monospace;font-size:.7rem">NCT05799...</div>
-        <div class="sr-cell title">GLP-1 Receptor Agonist Combination Study</div>
-        <div class="sr-cell">Phase 2</div>
-        <div class="sr-cell">Eli Lilly</div>
+      <div class="sheet-row new">
+        <span><span class="status-badge new">NEW</span></span>
+        <span class="cell-mono">NCT05799...</span>
+        <span class="cell-title">GLP-1 Receptor Agonist Combination Therapy</span>
+        <span class="cell-muted">Phase 2</span>
+        <span class="cell-muted">Eli Lilly</span>
+        <span class="cell-muted">2026-12</span>
       </div>
-      <div class="sheet-row">
-        <div class="sr-cell"><span class="badge active">ACTIVE</span></div>
-        <div class="sr-cell" style="font-family:monospace;font-size:.7rem">NCT05644...</div>
-        <div class="sr-cell title">Insulin Degludec + Liraglutide in Adults</div>
-        <div class="sr-cell">Phase 3</div>
-        <div class="sr-cell">Sanofi</div>
+      <div class="sheet-row active">
+        <span><span class="status-badge active">ACTIVE</span></span>
+        <span class="cell-mono">NCT05644...</span>
+        <span class="cell-title">Insulin Degludec + Liraglutide in Adults</span>
+        <span class="cell-muted">Phase 3</span>
+        <span class="cell-muted">Sanofi</span>
+        <span class="cell-muted">2026-06</span>
       </div>
-      <div class="sheet-row">
-        <div class="sr-cell"><span class="badge closed">CLOSED</span></div>
-        <div class="sr-cell" style="font-family:monospace;font-size:.7rem">NCT05512...</div>
-        <div class="sr-cell title">Oral Insulin Formulation Safety Trial</div>
-        <div class="sr-cell">Phase 2</div>
-        <div class="sr-cell">Oramed</div>
+      <div class="sheet-row closed">
+        <span><span class="status-badge closed">CLOSED</span></span>
+        <span class="cell-mono">NCT05512...</span>
+        <span class="cell-title">Oral Insulin Formulation Safety Study</span>
+        <span class="cell-muted">Phase 2</span>
+        <span class="cell-muted">Oramed</span>
+        <span class="cell-muted">—</span>
       </div>
     </div>
   </div>
@@ -218,144 +663,128 @@ footer p{font-size:0.78rem;color:var(--border)}
 
 <!-- HOW IT WORKS -->
 <section class="how" id="how">
-  <div class="tag">// How it works</div>
-  <h2 class="title">Three steps.<br>Zero manual work.</h2>
-  <p class="sub">Tell us what to watch. We handle everything else, every week.</p>
+  <div class="section-tag">// How it works</div>
+  <h2 class="section-title">Three steps.<br>Zero manual work.</h2>
+  <p class="section-sub">Tell us what you're watching. We handle everything else — every week, automatically.</p>
+
   <div class="steps">
-    <div class="step fade">
-      <div class="step-n" data-n="01">01</div>
-      <h3>Tell us what matters</h3>
-      <p>Fill out a short form — disease areas, phases, enrollment size, location, funding type. Takes 2 minutes.</p>
+    <div class="step fade-up">
+      <div class="step-num" data-n="01">01</div>
+      <h3>You tell us what matters</h3>
+      <p>Fill out a short form — disease area, trial phases, completion window. Takes 2 minutes.</p>
     </div>
-    <div class="step fade">
-      <div class="step-n" data-n="02">02</div>
-      <h3>We monitor the NIH database</h3>
-      <p>Our engine pulls all matching recruiting trials from ClinicalTrials.gov every week automatically.</p>
+    <div class="step fade-up">
+      <div class="step-num" data-n="02">02</div>
+      <h3>We monitor ClinicalTrials.gov</h3>
+      <p>Our engine runs weekly, pulling all recruiting trials that match your filters from the official NIH database.</p>
     </div>
-    <div class="step fade">
-      <div class="step-n" data-n="03">03</div>
-      <h3>Your digest lands in your inbox</h3>
-      <p>NEW trials flagged green. CLOSED trials tracked. Full details, direct links, contact info — nothing missed.</p>
+    <div class="step fade-up">
+      <div class="step-num" data-n="03">03</div>
+      <h3>Your feed lands in your inbox</h3>
+      <p>A digest email tells you what's new, what closed, and what changed — with full trial details and direct links.</p>
     </div>
   </div>
 </section>
 
-<!-- DATA POINTS -->
-<section id="data">
-  <div class="tag">// What's in every report</div>
-  <h2 class="title">20 data points.<br>Per trial. Per week.</h2>
-  <p class="sub">Not just names — everything you need to evaluate, compare, and act on.</p>
-  <div class="chips">
-    <div class="chip fade"><div class="chip-icon">📋</div><div class="chip-text"><strong>Status Tracking</strong><span>NEW / ACTIVE / CLOSED</span></div></div>
-    <div class="chip fade"><div class="chip-icon">🔗</div><div class="chip-text"><strong>Direct NCT Link</strong><span>One-click to full trial</span></div></div>
-    <div class="chip fade"><div class="chip-icon">💊</div><div class="chip-text"><strong>Intervention</strong><span>Drug, biological, device</span></div></div>
-    <div class="chip fade"><div class="chip-icon">🏢</div><div class="chip-text"><strong>Sponsor + Class</strong><span>Industry vs academic</span></div></div>
-    <div class="chip fade"><div class="chip-icon">👥</div><div class="chip-text"><strong>Target Enrollment</strong><span>Trial size at a glance</span></div></div>
-    <div class="chip fade"><div class="chip-icon">📅</div><div class="chip-text"><strong>Start &amp; Completion</strong><span>Full timeline visibility</span></div></div>
-    <div class="chip fade"><div class="chip-icon">📞</div><div class="chip-text"><strong>Central Contact</strong><span>Name + direct email</span></div></div>
-    <div class="chip fade"><div class="chip-icon">🏥</div><div class="chip-text"><strong>Facilities</strong><span>Sites &amp; competitor locations</span></div></div>
-    <div class="chip fade"><div class="chip-icon">🗓️</div><div class="chip-text"><strong>Days Tracked</strong><span>How long on your radar</span></div></div>
-    <div class="chip fade"><div class="chip-icon">📍</div><div class="chip-text"><strong>Location</strong><span>City, state, country</span></div></div>
+<!-- WHAT YOU GET -->
+<section class="data-points" id="data">
+  <div class="section-tag">// What's in every report</div>
+  <h2 class="section-title">20 data points.<br>Per trial. Every week.</h2>
+  <p class="section-sub">Not just trial names — everything you need to evaluate, compare, and act.</p>
+
+  <div class="data-grid">
+    <div class="data-chip fade-up"><div class="data-chip-icon">📋</div><div class="data-chip-text"><strong>Status Tracking</strong><span>NEW / ACTIVE / CLOSED</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">🔗</div><div class="data-chip-text"><strong>Direct NCT Link</strong><span>One-click to full trial</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">💊</div><div class="data-chip-text"><strong>Intervention</strong><span>Drug, biological, device</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">🏢</div><div class="data-chip-text"><strong>Sponsor + Class</strong><span>Industry vs academic</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">👥</div><div class="data-chip-text"><strong>Target Enrollment</strong><span>Trial size at a glance</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">📅</div><div class="data-chip-text"><strong>Start & Completion</strong><span>Full timeline visibility</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">📞</div><div class="data-chip-text"><strong>Central Contact</strong><span>Name + direct email</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">🏥</div><div class="data-chip-text"><strong>Facilities</strong><span>Sites & competitor locations</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">🗓️</div><div class="data-chip-text"><strong>Days Tracked</strong><span>How long on your radar</span></div></div>
+    <div class="data-chip fade-up"><div class="data-chip-icon">📍</div><div class="data-chip-text"><strong>Location</strong><span>City, state, country</span></div></div>
   </div>
 </section>
 
 <!-- PRICING -->
 <section class="pricing" id="pricing">
-  <div class="tag">// Pricing</div>
-  <h2 class="title">Start free.<br>No card needed.</h2>
-  <p class="sub">Your first month completely free. If it saves you time, we'll talk.</p>
-  <div class="price-card fade">
-    <div class="price-badge">Free Trial — First Month</div>
-    <h3>Full feed.<br>Zero cost.</h3>
-    <p>We set up your personalized tracker, run it for a full month, and deliver weekly reports to your inbox. No commitment required.</p>
-    <ul class="price-list">
-      <li>Multiple disease areas + phase filters</li>
+  <div class="section-tag">// Pricing</div>
+  <h2 class="section-title">Start free.<br>No credit card needed.</h2>
+  <p class="section-sub">Get your first month completely free. If it saves you time, we'll talk about continuing.</p>
+
+  <div class="pricing-card fade-up">
+    <div class="pricing-badge">Free Trial — First Month</div>
+    <h3>One disease area.<br>Full feed. Free.</h3>
+    <p>We set up your personalized trial tracker, run it for a full month, and deliver weekly reports to your inbox. No commitment, no card.</p>
+    <ul class="pricing-list">
+      <li>Custom disease + phase filters</li>
       <li>Weekly automated email digest</li>
       <li>Full 20-column data report</li>
       <li>NEW / ACTIVE / CLOSED tracking</li>
       <li>Direct contact info per trial</li>
-      <li>Overview Dashboard with charts</li>
+      <li>Competitor site tracking</li>
     </ul>
-    <a href="#subscribe" class="btn-main" style="display:block;text-align:center;border-radius:10px;">Request Your Free Feed →</a>
-    <p class="price-note">Continued service priced by disease areas and frequency. We'll discuss what fits.</p>
+    <a href="#subscribe" class="btn-primary" style="display:block; text-align:center;">Request Your Free Feed →</a>
+    <p class="pricing-note">After the free month, continued service is priced based on disease areas and update frequency. We'll discuss what works for you.</p>
   </div>
 </section>
 
-<!-- FORM -->
-<section class="form-sec" id="subscribe">
-  <div class="tag">// Get started</div>
-  <h2 class="title">Request your<br>free trial feed.</h2>
-  <p class="sub">Fill in your preferences. First report within 48 hours.</p>
+<!-- SUBSCRIBE FORM -->
+<section class="form-section" id="subscribe">
+  <div class="section-tag">// Get started</div>
+  <h2 class="section-title">Request your<br>free trial feed.</h2>
+  <p class="section-sub">Fill in your preferences below. We'll set up your personalized tracker and send your first report within 48 hours.</p>
 
-  <div class="form-wrap fade" id="formWrap">
+  <div class="form-wrap fade-up" id="formWrap">
     <form id="trialForm" onsubmit="handleSubmit(event)">
 
-      <div class="frow">
-        <div class="fg">
+      <div class="form-row">
+        <div class="form-group">
           <label>Your Name</label>
-          <input id="fn" type="text" placeholder="Dr. Jane Smith" required>
+          <input type="text" placeholder="Dr. Jane Smith" required>
         </div>
-        <div class="fg">
+        <div class="form-group">
           <label>Work Email</label>
-          <input id="fe" type="email" placeholder="jane@cro.com" required>
+          <input type="email" placeholder="jane@cro.com" required>
         </div>
       </div>
 
-      <div class="fg">
+      <div class="form-group">
         <label>Organization / Role</label>
-        <input id="fo" type="text" placeholder="e.g. Senior CRA · PharmaGroup / Independent CRO">
+        <input type="text" placeholder="e.g. Senior CRA at PharmaGroup / Independent CRO">
       </div>
 
-      <div class="fg">
-        <label>Disease Areas <span class="hint">— separate multiple with commas</span></label>
-        <input id="fd" type="text" placeholder="e.g. Type 2 Diabetes, Alzheimer's, Breast Cancer" required>
+      <div class="form-group">
+        <label>Disease Area to Track</label>
+        <input type="text" placeholder="e.g. Type 2 Diabetes, Alzheimer's, Breast Cancer" required>
       </div>
 
-      <div class="fg">
-        <label>Trial Phases <span class="hint">— select all that apply</span></label>
-        <div class="cb-group">
-          <label class="cb-item" onclick="tog(this)"><input type="checkbox" value="PHASE1"><span class="cb-box"></span><span>Phase 1</span></label>
-          <label class="cb-item on" onclick="tog(this)"><input type="checkbox" value="PHASE2" checked><span class="cb-box"></span><span>Phase 2</span></label>
-          <label class="cb-item on" onclick="tog(this)"><input type="checkbox" value="PHASE3" checked><span class="cb-box"></span><span>Phase 3</span></label>
-          <label class="cb-item" onclick="tog(this)"><input type="checkbox" value="PHASE4"><span class="cb-box"></span><span>Phase 4</span></label>
-          <label class="cb-item" onclick="tog(this)"><input type="checkbox" value="EARLY_PHASE1"><span class="cb-box"></span><span>Early Ph.1</span></label>
-          <label class="cb-item" onclick="tog(this)"><input type="checkbox" value="NA"><span class="cb-box"></span><span>N/A</span></label>
+      <div class="form-group">
+        <label>Trial Phases (select all that apply)</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" value="PHASE1"><span>Phase 1</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="PHASE2" checked><span>Phase 2</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="PHASE3" checked><span>Phase 3</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="PHASE4"><span>Phase 4</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="EARLY_PHASE1"><span>Early Phase 1</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="NA"><span>N/A</span></label>
         </div>
       </div>
 
-      <div class="fg">
-        <label>Target Enrollment Range <span class="hint">— optional</span></label>
-        <div class="erow">
-          <input id="fmin" type="number" placeholder="Min e.g. 10" min="0">
-          <span class="esep">to</span>
-          <input id="fmax" type="number" placeholder="Max e.g. 500" min="0">
-        </div>
-      </div>
-
-      <div class="frow">
-        <div class="fg">
-          <label>Funding Type <span class="hint">— optional</span></label>
-          <select id="fff">
-            <option value="">Any funding</option>
-            <option value="INDUSTRY">Industry only</option>
-            <option value="NIH">NIH / Government</option>
-            <option value="ACADEMIC">Academic / Other</option>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Completion Window</label>
+          <select>
+            <option value="">Any completion date</option>
+            <option>Completing in 2025</option>
+            <option>Completing in 2026</option>
+            <option>Completing in 2027+</option>
+            <option>Any date</option>
           </select>
         </div>
-        <div class="fg">
-          <label>Location <span class="hint">— optional</span></label>
-          <input id="floc" type="text" placeholder="e.g. United States, India">
-        </div>
-      </div>
-
-      <div class="frow">
-        <div class="fg">
-          <label>Start Date From <span class="hint">— optional</span></label>
-          <input id="fsd" type="month" style="color-scheme:dark">
-        </div>
-        <div class="fg">
+        <div class="form-group">
           <label>Update Frequency</label>
-          <select id="ffq">
+          <select>
             <option>Weekly</option>
             <option>Bi-weekly</option>
             <option>Monthly</option>
@@ -363,87 +792,63 @@ footer p{font-size:0.78rem;color:var(--border)}
         </div>
       </div>
 
-      <div class="fg">
-        <label>Anything specific? <span class="hint">— optional</span></label>
-        <textarea id="fnt" rows="3" placeholder="e.g. Interventional only, specific drug classes, exclude observational..." style="resize:vertical"></textarea>
+      <div class="form-group">
+        <label>Anything specific to focus on? (optional)</label>
+        <textarea rows="3" placeholder="e.g. Only industry-sponsored trials, trials in India, specific interventions..." style="resize:vertical;"></textarea>
       </div>
 
-      <button type="submit" class="submit-btn">Request My Free Feed →</button>
-      <p class="form-note">No payment. No spam. Setup confirmation within 48 hours.</p>
+      <button type="submit" class="form-submit">Request My Free Feed →</button>
+      <p class="form-note">No payment required. No spam. We'll email you within 48 hours to confirm your setup.</p>
     </form>
   </div>
 
-  <div class="success" id="successMsg">
-    <div class="ico">✅</div>
+  <div class="success-msg" id="successMsg">
+    <div class="check">✅</div>
     <h3>You're on the list.</h3>
-    <p>Your personalized trial feed will be ready within 48 hours.<br>Check your inbox for a confirmation email shortly.</p>
+    <p>We'll have your personalized trial feed set up within 48 hours.<br>Check your inbox for a confirmation shortly.</p>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
-  <a href="#" class="logo" style="color:rgba(255,255,255,0.25)">Trial<em style="color:var(--green)">Tracker</em></a>
-  <p>Automated clinical trial intelligence · Built for CROs, researchers &amp; medical affairs teams.</p>
+  <a href="#" class="nav-logo" style="color:rgba(255,255,255,0.3);">Trial<span style="color:var(--accent-mid)">Tracker</span></a>
+  <p>Automated clinical trial intelligence. Built for CROs, researchers & medical affairs teams.</p>
 </footer>
 
 <script>
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbwy52uQmwxMDiKOef1Z8sQ-bPFqdcqvETBjBP9p-N93pjGHQyNq9VmNXcTyvqwF1-B8/exec";
-
-// Scroll fade-in
-const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in') }), {threshold:.1});
-document.querySelectorAll('.fade').forEach(el => obs.observe(el));
-
-// Checkbox toggle
-function tog(label) {
-  const cb = label.querySelector('input');
-  setTimeout(() => {
-    cb.checked ? label.classList.add('on') : label.classList.remove('on');
-  }, 0);
-}
-
-// Form submit
-async function handleSubmit(e) {
-  e.preventDefault();
-  const btn = document.querySelector('.submit-btn');
-  const name    = document.getElementById('fn').value.trim();
-  const email   = document.getElementById('fe').value.trim();
-  const org     = document.getElementById('fo').value.trim();
-  const disease = document.getElementById('fd').value.trim();
-  const phases  = [...document.querySelectorAll('.cb-item input:checked')].map(c=>c.value).join(', ');
-  const emin    = document.getElementById('fmin').value;
-  const emax    = document.getElementById('fmax').value;
-  const funding = document.getElementById('fff').value;
-  const loc     = document.getElementById('floc').value.trim();
-  const sdate   = document.getElementById('fsd').value;
-  const freq    = document.getElementById('ffq').value;
-  const notes   = document.getElementById('fnt').value.trim();
-
-  if(!name || !email || !disease){ alert('Please fill in name, email and disease area.'); return; }
-
-  const extras = [
-    emin||emax ? 'Enrollment:'+( emin||'0')+'-'+(emax||'any') : '',
-    funding ? 'Funding:'+funding : '',
-    loc     ? 'Location:'+loc   : '',
-    sdate   ? 'StartFrom:'+sdate: '',
-    notes
-  ].filter(Boolean).join(' | ');
-
-  btn.disabled = true;
-  btn.textContent = 'Submitting...';
-
-  try {
-    await fetch(ENDPOINT, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({name,email,org,disease,phases,frequency:freq,notes:extras})
+  // Fade-up on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
     });
-    document.getElementById('formWrap').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
-  } catch(err) {
-    alert('Something went wrong. Email us at gettrialtracker@gmail.com');
-    btn.disabled = false;
-    btn.textContent = 'Request My Free Feed →';
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('trialForm');
+    const wrap = document.getElementById('formWrap');
+    const success = document.getElementById('successMsg');
+
+    // Collect form data (you can send this to a Google Form or email)
+    const name = form.querySelector('input[type="text"]').value;
+    const email = form.querySelector('input[type="email"]').value;
+    const disease = form.querySelectorAll('input[type="text"]')[1].value;
+    const phases = [...form.querySelectorAll('input[type="checkbox"]:checked')].map(c => c.value);
+
+    // Log to console (replace with your Google Form POST or email webhook)
+    console.log({ name, email, disease, phases });
+
+    // Show success
+    wrap.style.display = 'none';
+    success.style.display = 'block';
+
+    // TODO: POST to your Google Form or backend here
   }
-}
 </script>
 </body>
 </html>
